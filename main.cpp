@@ -16,7 +16,7 @@
 // BackLeft             motor         4               
 // Controller1          controller                    
 // LeftLift             motor         5               
-// RightLift            motor         6               
+// RightLift            motor         7               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -39,33 +39,16 @@ void autonomous(void) {
 
 
 /* User Control Task */
-float speed = 1;
-void changeSpeed(){
-  Brain.Screen.clearScreen();
-  Brain.Screen.print("Speed: %f",speed);
-  if(speed == 0.2){
-    speed = 0.5;
-    return;
-  } else if(speed == 0.5){
-    speed = 0.75;
-    return;
-  } else if(speed == 0.75){
-    speed = 1;
-    return;
-  } else if(speed == 1){
-    speed = 0.2;
-    return;
-  }
-}
+
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent)*speed, velocityUnits::pct);
-    FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent)*speed, velocityUnits::pct);
-    BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent)*speed, velocityUnits::pct);
-    FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent)*speed, velocityUnits::pct);
+    BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+    FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+    BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+    FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     
-    Controller1.ButtonUp.released(changeSpeed);
+    
     
     if(Controller1.ButtonR1.pressing()){
       LeftLift.spin(directionType::fwd, 50, velocityUnits::pct);
@@ -77,7 +60,7 @@ void usercontrol(void) {
       LeftLift.stop();
       RightLift.stop();
     }
-
+    
     
     wait(20, msec); 
   }
