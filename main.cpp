@@ -49,10 +49,9 @@ void usercontrol(void) {
     FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     
     
-    
     if(Controller1.ButtonR1.pressing()){
-      LeftLift.spin(directionType::fwd, 50, velocityUnits::pct);
-      RightLift.spin(directionType::fwd, 50, velocityUnits::pct);
+      LeftLift.spin(directionType::fwd, 80, velocityUnits::pct);
+      RightLift.spin(directionType::fwd, 80, velocityUnits::pct);
     } else if(Controller1.ButtonR2.pressing()){
       LeftLift.spin(directionType::rev, 50, velocityUnits::pct);
       RightLift.spin(directionType::rev, 50, velocityUnits::pct);
