@@ -34,7 +34,15 @@ void pre_auton(void) {
 /* Autonomous Task */
 
 void autonomous(void) {
-  
+  BackLeft.spin(directionType::fwd, 50, velocityUnits::pct);
+  FrontLeft.spin(directionType::fwd, 50, velocityUnits::pct);
+  BackRight.spin(directionType::fwd, 50, velocityUnits::pct);
+  FrontRight.spin(directionType::fwd, 50, velocityUnits::pct);
+  vex::wait(2, timeUnits::sec);
+  BackLeft.stop();
+  FrontLeft.stop();
+  BackRight.stop();
+  FrontRight.stop();
 }
 
 
