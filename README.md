@@ -7,4 +7,4 @@ The programs for 98271E 2021-2022 season.
 2. Simple Auton - a really basic auton with the FirstDriving driving code, in the SimpleAuton branch. 
 
 ## The Robot
-![Our Robot](https://github.com/BrysonV10/VexTippingPtPrograms/blob/main/IMG_0352.HEIC)
+![Our Robot](https://github.com/BrysonV10/VexTippingPtPrograms/blob/main/IMG_0352.HEIC?raw=true)
