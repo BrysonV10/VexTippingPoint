@@ -37,7 +37,7 @@ void autonomous(void) {
   
 }
 
-
+bool toRumble = false;
 /* User Control Task */
 
 void usercontrol(void) {
@@ -60,6 +60,23 @@ void usercontrol(void) {
       RightLift.stop();
     }
     
+    if(Controller1.ButtonUp.pressing()){
+      if(toRumble){
+        toRumble = false;
+        Controller1.rumble(rumbleShort);
+      }
+      BackLeft.spin(directionType::fwd, 80, velocityUnits::pct);
+      FrontLeft.spin(directionType::fwd, 80, velocityUnits::pct);
+      BackRight.spin(directionType::fwd, 80, velocityUnits::pct);
+      FrontRight.spin(directionType::fwd, 80, velocityUnits::pct);
+      
+    } else {
+      toRumble = true;
+      BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+      FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+      BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+      FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+    }
     
     wait(20, msec); 
   }
