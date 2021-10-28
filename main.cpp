@@ -26,7 +26,7 @@ using namespace vex;
 competition Competition;
 
 void pre_auton(void) {
-  
+
   vexcodeInit();
 }
 
@@ -34,20 +34,45 @@ void pre_auton(void) {
 /* Autonomous Task */
 
 void autonomous(void) {
-  BackLeft.spin(directionType::fwd, 50, velocityUnits::pct);
-  FrontLeft.spin(directionType::fwd, 50, velocityUnits::pct);
-  BackRight.spin(directionType::fwd, 50, velocityUnits::pct);
-  FrontRight.spin(directionType::fwd, 50, velocityUnits::pct);
+  //lower lift
+  RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
+  LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
   vex::wait(2, timeUnits::sec);
-  BackLeft.stop();
-  FrontLeft.stop();
-  BackRight.stop();
-  FrontRight.stop();
+  RightLift.stop();
+  LeftLift.stop();
+  //forward to goal
+  BackLeft.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
+  FrontLeft.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
+  BackRight.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
+  FrontRight.rotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
+  //up
+  RightLift.spin(directionType::rev, 60, velocityUnits::pct);
+  LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
+  vex::wait(2, timeUnits::sec);
+  RightLift.stop();
+  LeftLift.stop();
+  //back in
+  BackLeft.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
+  FrontLeft.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
+  BackRight.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
+  FrontRight.rotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
+  //arm down
+  RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
+  LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
+  vex::wait(2, timeUnits::sec);
+  RightLift.stop();
+  LeftLift.stop();
+  //back up
+  BackLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
+  FrontLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
+  BackRight.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
+  FrontRight.rotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
+
 }
 
 
 /* User Control Task */
-
+bool toRumble = true;
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
@@ -68,19 +93,24 @@ void usercontrol(void) {
       RightLift.stop();
     }
     
+    if(Controller1.ButtonUp.pressing()){
+      if(toRumble){
+        toRumble = false;
+        Controller1.rumble(rumbleShort);
+      }
+      BackLeft.spin(directionType::fwd, 80, velocityUnits::pct);
+      FrontLeft.spin(directionType::fwd, 80, velocityUnits::pct);
+      BackRight.spin(directionType::fwd, 80, velocityUnits::pct);
+      FrontRight.spin(directionType::fwd, 80, velocityUnits::pct);
+      
+    } else {
+      toRumble = true;
+      BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+      FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
+      BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+      FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+    }
     
     wait(20, msec); 
-  }
-}
-
-
-int main() {
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
-  pre_auton();
-
- 
-  while (true) {
-    wait(100, msec);
   }
 }
