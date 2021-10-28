@@ -2,4 +2,4 @@
 The programs for 98271E 2021-2022 season.
 
 ## Simple Auton
-This program has basic driving and a super simple auton that currently goes up the ramp (moves forward for 2 seconds)
+This program goes forward and grabs the yellow mobile goal on the line and pulls it back - 20 points
