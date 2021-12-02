@@ -15,7 +15,8 @@
 // BackRight            motor         3               
 // BackLeft             motor         4               
 // Controller1          controller                    
-// LeftLift             motor         5               
+// Tow                  motor         5               
+// LeftLift             motor         6               
 // RightLift            motor         7               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -76,24 +77,22 @@ bool toRumble = true;
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
+    //Drive
     BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
     FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
     BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     
-    
-    if(Controller1.ButtonR1.pressing()){
-      LeftLift.spin(directionType::fwd, 80, velocityUnits::pct);
-      RightLift.spin(directionType::fwd, 80, velocityUnits::pct);
-    } else if(Controller1.ButtonR2.pressing()){
-      LeftLift.spin(directionType::rev, 50, velocityUnits::pct);
-      RightLift.spin(directionType::rev, 50, velocityUnits::pct);
+    // Tow Control
+    if(Controller1.ButtonDown.pressing()){
+      Tow.spin(directionType::fwd, 50, velocityUnits::pct);
+    } else if(Controller1.ButtonUp.pressing()){
+      Tow.spin(directionType::rev, 50, velocityUnits::pct);
     } else {
-      LeftLift.stop();
-      RightLift.stop();
+      Tow.stop(brakeType::hold);
     }
-    
-    if(Controller1.ButtonUp.pressing()){
+    //Drive Forward Button (A button)
+    if(Controller1.ButtonA.pressing()){
       if(toRumble){
         toRumble = false;
         Controller1.rumble(rumbleShort);
@@ -102,7 +101,6 @@ void usercontrol(void) {
       FrontLeft.spin(directionType::fwd, 80, velocityUnits::pct);
       BackRight.spin(directionType::fwd, 80, velocityUnits::pct);
       FrontRight.spin(directionType::fwd, 80, velocityUnits::pct);
-      
     } else {
       toRumble = true;
       BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
@@ -110,7 +108,33 @@ void usercontrol(void) {
       BackRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
       FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     }
-    
+
+    //Lift
+    if(Controller1.ButtonR1.pressing()){
+      LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
+      RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
+    } else if(Controller1.ButtonR2.pressing()){
+      LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
+      RightLift.spin(directionType::rev, 60, velocityUnits::pct);
+    } else {
+      RightLift.stop();
+      LeftLift.stop();
+    }
+
+
     wait(20, msec); 
+  }
+}
+
+
+
+int main() {
+  Competition.autonomous(autonomous);
+  Competition.drivercontrol(usercontrol);
+  pre_auton();
+
+ 
+  while (true) {
+    wait(100, msec);
   }
 }
