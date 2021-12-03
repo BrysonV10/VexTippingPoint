@@ -18,6 +18,8 @@
 // Tow                  motor         5               
 // RightLift            motor         7               
 // LeftLift             motor         6               
+// ArmBump              bumper        A               
+// ClawAir              digital_out   H               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -37,10 +39,21 @@ void pre_auton(void) {
 void autonomous(void) {
   
 }
-
+// init variables
 bool toRumble = false;
-/* User Control Task */
+bool pneumaticCont = false;
 
+//callback for Button L1
+void changePneumatic(){
+  Brain.Screen.clearScreen();
+  Brain.Screen.print(pneumaticCont);
+  if(pneumaticCont){
+    pneumaticCont = false;
+  } else {
+    pneumaticCont = true;
+  }
+}
+//BEGIN usercontrol
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
@@ -80,16 +93,23 @@ void usercontrol(void) {
     if(Controller1.ButtonR1.pressing()){
       LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
       RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
-    } else if(Controller1.ButtonR2.pressing()){
+    } else if(Controller1.ButtonR2.pressing() && ArmBump.pressing() == false){
       LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
       RightLift.spin(directionType::rev, 60, velocityUnits::pct);
+    } else if(ArmBump.pressing()){
+      Controller1.rumble(rumbleShort);
     } else {
       RightLift.stop();
       LeftLift.stop();
     }
-
-
-    wait(20, msec); 
+    // ClawAir.set(pneumaticCont);
+    // Controller1.ButtonL1.pressed(changePneumatic);
+    if(Controller1.ButtonL1.pressing()){
+      ClawAir.set(true);
+    } else {
+      ClawAir.set(false);
+    }
+    wait(20, msec);
   }
 }
 
