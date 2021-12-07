@@ -18,6 +18,8 @@
 // Tow                  motor         5               
 // LeftLift             motor         6               
 // RightLift            motor         7               
+// ArmBump              bumper        A               
+// ClawAir              digital_out   H               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -27,7 +29,7 @@ using namespace vex;
 competition Competition;
 
 void pre_auton(void) {
-
+  ClawAir.set(true);
   vexcodeInit();
 }
 
@@ -35,45 +37,55 @@ void pre_auton(void) {
 /* Autonomous Task */
 
 void autonomous(void) {
-  //lower lift
-  RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
-  LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
-  vex::wait(2, timeUnits::sec);
-  RightLift.stop();
-  LeftLift.stop();
-  //forward to goal
-  BackLeft.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
-  FrontLeft.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
-  BackRight.startRotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
-  FrontRight.rotateFor(directionType::fwd, 4, rotationUnits::rev, 70, velocityUnits::pct);
-  //up
-  RightLift.spin(directionType::rev, 60, velocityUnits::pct);
-  LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
-  vex::wait(2, timeUnits::sec);
-  RightLift.stop();
-  LeftLift.stop();
-  //back in
-  BackLeft.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
-  FrontLeft.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
-  BackRight.startRotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
-  FrontRight.rotateFor(directionType::rev, 3, rotationUnits::rev, 60, velocityUnits::pct);
-  //arm down
-  RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
-  LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
-  vex::wait(2, timeUnits::sec);
-  RightLift.stop();
-  LeftLift.stop();
-  //back up
-  BackLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
-  FrontLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
-  BackRight.startRotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
-  FrontRight.rotateFor(directionType::rev, 1, rotationUnits::rev, 60, velocityUnits::pct);
+  // FrontLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev);
+  // BackLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev);
+  // FrontRight.startRotateFor(directionType::rev, 1, rotationUnits::rev);
+  // BackRight.rotateFor(directionType::rev, 1, rotationUnits::rev);
+  // wait(1, timeUnits::sec);
+  // Tow.spin(directionType::rev, 80, velocityUnits::pct);
+  // wait(1, timeUnits::sec);
+  
+  // FrontLeft.startRotateFor(directionType::fwd, 0.5, rotationUnits::rev, 20, velocityUnits::pct);
+  // BackLeft.startRotateFor(directionType::fwd, 0.5, rotationUnits::rev, 20, velocityUnits::pct);
+  // FrontRight.startRotateFor(directionType::fwd, 0.5, rotationUnits::rev, 20, velocityUnits::pct);
+  // BackRight.rotateFor(directionType::fwd, 0.5, rotationUnits::rev, 20, velocityUnits::pct);
+  
+  // FrontLeft.startRotateFor(directionType::rev, 0.6, rotationUnits::rev, 30, velocityUnits::pct);
+  // BackLeft.startRotateFor(directionType::rev, 0.6, rotationUnits::rev, 30, velocityUnits::pct);
+  // FrontRight.startRotateFor(directionType::rev, 0.6, rotationUnits::rev, 30, velocityUnits::pct);
+  // BackRight.rotateFor(directionType::rev, 0.6, rotationUnits::rev, 30, velocityUnits::pct);
+
+  // Tow.spin(directionType::fwd);
+  // wait(1, timeUnits::sec);
+  // FrontLeft.startRotateFor(directionType::fwd, 1.1, rotationUnits::rev, 20, velocityUnits::pct);
+  // BackLeft.startRotateFor(directionType::fwd, 1.1, rotationUnits::rev, 20, velocityUnits::pct);
+  // FrontRight.startRotateFor(directionType::fwd, 1.1, rotationUnits::rev, 20, velocityUnits::pct);
+  // BackRight.rotateFor(directionType::fwd, 1.1, rotationUnits::rev, 20, velocityUnits::pct);
+
+  // FrontLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev);
+  // BackLeft.startRotateFor(directionType::rev, 1, rotationUnits::rev);
+  // BackRight.startRotateFor(directionType::fwd, 1, rotationUnits::rev);
+  // FrontRight.rotateFor(directionType::fwd, 1, rotationUnits::rev);
+  // wait(1, timeUnits::sec);
+  // Tow.stop();
+  Tow.spin(directionType::rev);
+  FrontLeft.startRotateFor(directionType::rev, 4, rotationUnits::rev, 90, velocityUnits::pct);
+  BackLeft.startRotateFor(directionType::rev, 4, rotationUnits::rev, 90, velocityUnits::pct);
+  FrontRight.startRotateFor(directionType::rev, 4, rotationUnits::rev, 90, velocityUnits::pct);
+  BackRight.rotateFor(directionType::rev, 4, rotationUnits::rev, 90, velocityUnits::pct);
+  Tow.spin(directionType::fwd);
+  wait(0.7, timeUnits::sec);
+  FrontLeft.startRotateFor(directionType::fwd, 4.1, rotationUnits::rev, 80, velocityUnits::pct);
+  BackLeft.startRotateFor(directionType::fwd, 4.1, rotationUnits::rev, 80, velocityUnits::pct);
+  FrontRight.startRotateFor(directionType::fwd, 4.1, rotationUnits::rev, 80, velocityUnits::pct);
+  BackRight.rotateFor(directionType::fwd, 4.1, rotationUnits::rev, 80, velocityUnits::pct);
 
 }
 
 
 /* User Control Task */
 bool toRumble = true;
+bool pneumaticCont = false;
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
@@ -89,13 +101,12 @@ void usercontrol(void) {
     } else if(Controller1.ButtonUp.pressing()){
       Tow.spin(directionType::rev, 50, velocityUnits::pct);
     } else {
-      Tow.stop(brakeType::hold);
+      Tow.spin(directionType::rev, 30, velocityUnits::pct);
     }
     //Drive Forward Button (A button)
     if(Controller1.ButtonA.pressing()){
       if(toRumble){
         toRumble = false;
-        Controller1.rumble(rumbleShort);
       }
       BackLeft.spin(directionType::fwd, 80, velocityUnits::pct);
       FrontLeft.spin(directionType::fwd, 80, velocityUnits::pct);
@@ -111,18 +122,25 @@ void usercontrol(void) {
 
     //Lift
     if(Controller1.ButtonR1.pressing()){
-      LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
-      RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
-    } else if(Controller1.ButtonR2.pressing()){
+      LeftLift.spin(directionType::fwd, 80, velocityUnits::pct);
+      RightLift.spin(directionType::fwd, 80, velocityUnits::pct);
+    } else if(Controller1.ButtonR2.pressing() && ArmBump.pressing() == false){
       LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
       RightLift.spin(directionType::rev, 60, velocityUnits::pct);
     } else {
-      RightLift.stop();
-      LeftLift.stop();
+      RightLift.stop(brakeType::hold);
+      LeftLift.stop(brakeType::hold);
     }
-
-
-    wait(20, msec); 
+    // ClawAir.set(pneumaticCont);
+    // Controller1.ButtonL1.pressed(changePneumatic);
+    if(Controller1.ButtonL1.pressing() && !pneumaticCont){
+      ClawAir.set(true);
+      pneumaticCont = true;
+    } else if(Controller1.ButtonL2.pressing() && pneumaticCont){
+      ClawAir.set(false);
+      pneumaticCont = false;
+    }
+    wait(20, msec);
   }
 }
 
