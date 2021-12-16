@@ -1,6 +1,6 @@
-## Vex Team 98271E
+# Vex Team 98271E
 
-This website is hosted on github pages cause I'm too lazy to make my own site.
+
 
 ### The Setup
 In GitHub, I have each program with its own branch. This allows for tracking of the program over time with gradual evolution. It also allows for each program to have its own environment with the best setup.
@@ -12,10 +12,10 @@ Program Tracking
 ================
 
 ## Each program has its own row in the table and is actively being tracked to check which is still being maintained. 
-Key:
-✅ Used in Competition and Maintained
-🔧 Needs Maintenance due to robot update
-❌ No longer used - Archived
+**Key:**  
+✅ Used in Competition and Maintained  
+🔧 Needs Maintenance due to robot update  
+❌ No longer used - Archived   
 
 | Program Name | Maintenance Status | Notes|
 | -------------| -------------------| -----|
