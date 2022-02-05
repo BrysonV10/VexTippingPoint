@@ -39,7 +39,8 @@ void pre_auton(void) {
   vexcodeInit();
 }
 
-
+bool waitingForTowBump;
+void waitForBump(void){waitingForTowBump = true;}
 /* Autonomous Task */
 
 void autonomous(void) {
@@ -49,9 +50,7 @@ void autonomous(void) {
   int startingRotationVal = BackLeft.rotation(rotationUnits::rev);
   int InertialVal = 0;
   while(!TowBump.pressing() && std::abs(BackLeft.rotation(rotationUnits::rev)-startingRotationVal) < 5.4){
-    //Controller1.Screen.clearLine();
     InertialVal = Inertial.yaw();
-    //Controller1.Screen.print(InertialVal);
     //Inertial Auto Straightener
     if(std::abs(BackLeft.rotation(rotationUnits::rev)-startingRotationVal) < 3.75){
       //go fast before 3.75 rotations
@@ -146,9 +145,7 @@ bool pneumaticCont = false;
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    Brain.Screen.clearScreen();
-    Controller1.Screen.clearLine();
-    Controller1.Screen.print(Inertial.pitch());
+    Controller1.ButtonY.pressed(waitForBump);
     //Drive
     BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
     FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
@@ -161,15 +158,15 @@ void usercontrol(void) {
     } else if(Controller1.ButtonUp.pressing()){
       Tow.spin(directionType::rev, 50, velocityUnits::pct);
     } else {
-      Tow.spin(directionType::rev, 30, velocityUnits::pct);
+      Tow.stop(brakeType::brake);
     }
 
-    if(Controller1.ButtonRight.pressing()){
-      Ringinator.spin(directionType::rev);
-    } else if(Controller1.ButtonLeft.pressing()){
-      Ringinator.spin(directionType::fwd);
-    } else {
-      Ringinator.stop();
+    if(waitingForTowBump && TowBump.pressing()){
+      Tow.spin(directionType::rev, 40, velocityUnits::pct);
+      waitingForTowBump = false;
+    } else if(waitingForTowBump && TowBump.pressing() == false){
+      Tow.spin(directionType::fwd, 20, velocityUnits::pct);
+      
     }
     //Drive Forward Button (A button)
     if(Controller1.ButtonA.pressing()){
@@ -188,12 +185,11 @@ void usercontrol(void) {
       FrontRight.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
     }
 
-
     //Lift
-    if(Controller1.ButtonR1.pressing()){
+    if(Controller1.ButtonR2.pressing()){
       LeftLift.spin(directionType::fwd, 80, velocityUnits::pct);
       RightLift.spin(directionType::fwd, 80, velocityUnits::pct);
-    } else if(Controller1.ButtonR2.pressing() && ArmBump.pressing() == false){
+    } else if(Controller1.ButtonR1.pressing()){
       LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
       RightLift.spin(directionType::rev, 60, velocityUnits::pct);
     } else {
@@ -209,6 +205,7 @@ void usercontrol(void) {
       ClawAir.set(false);
       pneumaticCont = false;
     }
+    Ringinator.spin(directionType::fwd, 5, velocityUnits::pct);
     wait(20, msec);
   }
 }
