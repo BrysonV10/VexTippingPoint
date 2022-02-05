@@ -20,6 +20,8 @@
 // LeftLift             motor         6               
 // ArmBump              bumper        A               
 // ClawAir              digital_out   H               
+// Ringinator           motor         8               
+// TowBump              bumper        G               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -27,12 +29,14 @@
 using namespace vex;
 
 competition Competition;
-
+bool waitingForTowBump = false;
 void pre_auton(void) {
   
   vexcodeInit();
+  ClawAir.set(true);
 }
 
+void waitForBump(void){waitingForTowBump = true;}
 
 /* Autonomous Task */
 
@@ -57,6 +61,7 @@ void changePneumatic(){
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
+    Controller1.ButtonY.pressed(waitForBump);
     //Drive
     BackLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
     FrontLeft.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
@@ -69,13 +74,20 @@ void usercontrol(void) {
     } else if(Controller1.ButtonUp.pressing()){
       Tow.spin(directionType::rev, 50, velocityUnits::pct);
     } else {
-      Tow.stop(brakeType::hold);
+      Tow.stop(brakeType::brake);
+    }
+
+    if(waitingForTowBump && TowBump.pressing()){
+      Tow.spin(directionType::rev, 40, velocityUnits::pct);
+      waitingForTowBump = false;
+    } else if(waitingForTowBump && TowBump.pressing() == false){
+      Tow.spin(directionType::fwd, 20, velocityUnits::pct);
+      
     }
     //Drive Forward Button (A button)
     if(Controller1.ButtonA.pressing()){
       if(toRumble){
         toRumble = false;
-        Controller1.rumble(rumbleShort);
       }
       BackLeft.spin(directionType::fwd, 80, velocityUnits::pct);
       FrontLeft.spin(directionType::fwd, 80, velocityUnits::pct);
@@ -90,25 +102,26 @@ void usercontrol(void) {
     }
 
     //Lift
-    if(Controller1.ButtonR1.pressing()){
-      LeftLift.spin(directionType::fwd, 60, velocityUnits::pct);
-      RightLift.spin(directionType::fwd, 60, velocityUnits::pct);
-    } else if(Controller1.ButtonR2.pressing() && ArmBump.pressing() == false){
+    if(Controller1.ButtonR2.pressing()){
+      LeftLift.spin(directionType::fwd, 80, velocityUnits::pct);
+      RightLift.spin(directionType::fwd, 80, velocityUnits::pct);
+    } else if(Controller1.ButtonR1.pressing()){
       LeftLift.spin(directionType::rev, 60, velocityUnits::pct);
       RightLift.spin(directionType::rev, 60, velocityUnits::pct);
-    } else if(ArmBump.pressing()){
-      Controller1.rumble(rumbleShort);
     } else {
-      RightLift.stop();
-      LeftLift.stop();
+      RightLift.stop(brakeType::hold);
+      LeftLift.stop(brakeType::hold);
     }
     // ClawAir.set(pneumaticCont);
     // Controller1.ButtonL1.pressed(changePneumatic);
-    if(Controller1.ButtonL1.pressing()){
+    if(Controller1.ButtonL1.pressing() && !pneumaticCont){
       ClawAir.set(true);
-    } else {
+      pneumaticCont = true;
+    } else if(Controller1.ButtonL2.pressing() && pneumaticCont){
       ClawAir.set(false);
+      pneumaticCont = false;
     }
+    Ringinator.spin(directionType::fwd, 5, velocityUnits::pct);
     wait(20, msec);
   }
 }
